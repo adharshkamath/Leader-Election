@@ -5,7 +5,7 @@
 start() -> 
     lager:start(),
     ok = application:start(leader),
-    ok = connect_nodes(),
+    connect_nodes(),
     ok.
 
 start(_StartType, _StartArgs) ->
@@ -16,7 +16,7 @@ stop(_State) ->
     ok = application:stop(leader).
 
 connect_nodes() ->
-    {ok, AllNodes } = application:get_env(bully, nodes),
+    {ok, AllNodes } = application:get_env(leader, nodes),
     Nodes = lists:delete(node(), AllNodes),
     lager:info("Connecting to nodes ~p~n", [Nodes]),
     ConnResult = lists:map(fun net_kernel:connect_node/1, Nodes),
