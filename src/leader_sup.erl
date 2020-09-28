@@ -14,9 +14,12 @@ start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 init([]) ->
-    {ok, Timeout} = application:get_env(leader, timeout),
-    {ok, Leader} = application:get_env(leader, lead),
-    {ok, Nodes0} = application:get_env(leader, nodes),
+    Timeout = 500,
+    Leader = '1@127.0.0.1',
+    Nodes0 = ['1@127.0.0.1',
+                '2@127.0.0.1',
+                '3@127.0.0.1',
+                '4@127.0.0.1'],
     Nodes = lists:delete(node(), Nodes0),
     State = #state{leader = Leader, node = node(), nodes = Nodes, timeout = Timeout},
     {ok, { {one_for_one, 5, 10}, [?CHILD(leader, worker, [State])]} }.
